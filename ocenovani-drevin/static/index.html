@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oceňování dřevin dle metodiky AOPK ČR</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Oceňování dřevin <span class="subtitle">dle metodiky AOPK ČR (2021/2022)</span></h1>
+    </header>
+
+    <main>
+        <div class="info-bar" id="info-bar"></div>
+
+        <form id="tree-form">
+            <h2>Specifikace stromu</h2>
+
+            <div class="field">
+                <label for="taxon">Taxon <span class="required">*</span></label>
+                <input list="taxon-list" id="taxon" name="taxon" required
+                       placeholder="začněte psát český nebo latinský název">
+                <datalist id="taxon-list"></datalist>
+                <div class="hint" id="taxon-info"></div>
+            </div>
+
+            <div class="field" id="deliberate-row" style="display:none;">
+                <label class="checkbox">
+                    <input type="checkbox" id="deliberately-planted">
+                    Výjimečné ocenění invazivního taxonu dle kategorie B
+                </label>
+            </div>
+
+            <div class="field">
+                <label>Průměry kmenů (cm) <span class="required">*</span></label>
+                <div id="diameters">
+                    <input type="number" class="diameter" placeholder="50" min="5" step="0.1" required>
+                </div>
+                <div class="hint">
+                    Min. 5 cm. Pro vícekmen přidej další kmeny tlačítkem níže.
+                </div>
+                <button type="button" id="add-diameter" class="link-btn">+ přidat kmen</button>
+                <label class="checkbox" style="margin-top:0.5em;">
+                    <input type="checkbox" id="dbh-on-stump">
+                    Měřeno na pařezu (přepočet d/1,37)
+                </label>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="tree-height">Výška stromu (m)</label>
+                    <input type="number" id="tree-height" min="0" step="0.5">
+                </div>
+                <div class="field">
+                    <label for="stem-height">Výška nasazení koruny (m)</label>
+                    <input type="number" id="stem-height" min="0" step="0.5">
+                </div>
+                <div class="field">
+                    <label for="crown-spread">Průměr koruny (m)</label>
+                    <input type="number" id="crown-spread" min="0" step="0.5">
+                </div>
+            </div>
+            <div class="hint">Vyplň všechny tři pro zohlednění objemu koruny (krok 2). Vynechání = ZBH se nepřepočítá.</div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="vitality">Fyziologická vitalita <span class="required">*</span></label>
+                    <select id="vitality" required>
+                        <option value="1">1 — výborná až mírně snížená</option>
+                        <option value="2">2 — zřetelně snížená</option>
+                        <option value="3">3 — výrazně snížená</option>
+                        <option value="4">4 — zbytková</option>
+                        <option value="5">5 — suchý strom</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="health">Zdravotní stav <span class="required">*</span></label>
+                    <select id="health" required>
+                        <option value="1">1 — výborný až dobrý</option>
+                        <option value="2">2 — zhoršený</option>
+                        <option value="3">3 — výrazně zhoršený</option>
+                        <option value="4">4 — silně narušený</option>
+                        <option value="5">5 — havarijní / rozpadlý strom</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="removed-crown-volume">Odstraněná část koruny (nevhodný řez)</label>
+                <select id="removed-crown-volume">
+                    <option value="">— nevyplňovat (bez poškození) —</option>
+                    <option value="10">10 %</option>
+                    <option value="20">20 %</option>
+                    <option value="30">30 %</option>
+                    <option value="40">40 %</option>
+                    <option value="50">50 %</option>
+                    <option value="60">60 %</option>
+                    <option value="70">70 %</option>
+                    <option value="80">80 %</option>
+                    <option value="90">90 %</option>
+                </select>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="location-attractiveness">Atraktivita umístění <span class="required">*</span></label>
+                    <select id="location-attractiveness" required>
+                        <option value="high">vysoká</option>
+                        <option value="medium" selected>střední</option>
+                        <option value="less_significant">méně významná</option>
+                        <option value="low">nízká</option>
+                        <option value="very_low">velmi nízká</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="growth-conditions">Růstové podmínky <span class="required">*</span></label>
+                    <select id="growth-conditions" required>
+                        <option value="unaffected" selected>neovlivněné</option>
+                        <option value="good">dobré</option>
+                        <option value="impaired">zhoršené</option>
+                        <option value="extreme">extrémní</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="checkbox">
+                        <input type="checkbox" id="memorial-tree">
+                        Památný strom (koef 2,0)
+                    </label>
+                </div>
+            </div>
+
+            <fieldset>
+                <legend>Prvky se zvýšeným biologickým potenciálem (mikrohabitaty)</legend>
+                <div class="hint">Zaškrtni vše, co u stromu pozoruješ. Pro kmenové dutiny (4) a rozštípnuté dřevo (9) jde o rozsáhlý charakter zaškrtnutím "rozsáhlé".</div>
+                <div class="micro-habitats">
+                    <!-- vyplní JS -->
+                </div>
+            </fieldset>
+
+            <p class="buttons">
+                <button type="submit" class="primary">Vypočítat hodnotu</button>
+                <button type="reset">Vynulovat</button>
+            </p>
+        </form>
+
+        <section id="result-section" style="display:none;">
+            <h2>Výpočet bodové hodnoty stromu</h2>
+            <table class="result-table">
+                <tbody id="result-rows"></tbody>
+            </table>
+
+            <p class="result-summary" id="result-summary"></p>
+
+            <div id="damage-info" style="display:none;"></div>
+
+            <div id="compensation-block" style="display:none;">
+                <h2>Kompenzační opatření</h2>
+                <div id="compensation-frame-info"></div>
+                <table class="result-table">
+                    <thead><tr><th>Opatření</th><th class="right">Body</th><th class="right">Kč</th></tr></thead>
+                    <tbody id="compensation-rows"></tbody>
+                </table>
+                <p id="compensation-total" class="result-summary"></p>
+                <p id="compensation-note" class="hint"></p>
+
+                <div class="compensation-buttons">
+                    <button type="button" id="btn-add-outplanting">+ Přidat výsadbu</button>
+                    <button type="button" id="btn-add-measure">+ Přidat pěstební opatření</button>
+                </div>
+
+                <div id="outplanting-form" class="inline-form" style="display:none;">
+                    <h3>Přidat výsadbu</h3>
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Skupina taxonu</label>
+                            <select id="op-group">
+                                <option value="ls1">Listnaté stromy I (rychle rostoucí)</option>
+                                <option value="ls2" selected>Listnaté stromy II (běžné)</option>
+                                <option value="ls3">Listnaté stromy III (vzácné)</option>
+                                <option value="js1">Jehličnaté stromy I</option>
+                                <option value="js2">Jehličnaté stromy II</option>
+                                <option value="lk">Listnaté keře</option>
+                                <option value="jk">Jehličnaté keře</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Velikost</label>
+                            <select id="op-size"></select>
+                        </div>
+                        <div class="field">
+                            <label>Počet</label>
+                            <input type="number" id="op-count" min="1" value="1">
+                        </div>
+                    </div>
+                    <p class="buttons">
+                        <button type="button" id="btn-confirm-outplanting" class="primary">Přidat</button>
+                        <button type="button" id="btn-cancel-outplanting">Zrušit</button>
+                    </p>
+                </div>
+
+                <div id="measure-form" class="inline-form" style="display:none;">
+                    <h3>Přidat pěstební opatření</h3>
+                    <div class="field">
+                        <label>Typ</label>
+                        <select id="m-type">
+                            <option value="výchovný řez">výchovný řez (S-RV)</option>
+                            <option value="zdravotní řez">zdravotní řez (S-RZ)</option>
+                            <option value="bezpečnostní řez">bezpečnostní řez (S-RB)</option>
+                            <option value="lokální redukce">lokální redukce (S-RLLR, S-RLSP, S-RLPV)</option>
+                            <option value="obvodová redukce">obvodová redukce (S-RO)</option>
+                            <option value="instalace bezpečnostní vazby - statické">statická bezpečnostní vazba</option>
+                            <option value="instalace bezpečnostní vazby - dynamické">dynamická bezpečnostní vazba</option>
+                        </select>
+                    </div>
+                    <div class="field-row">
+                        <div class="field" id="m-height-row">
+                            <label>Výška stromu (m)</label>
+                            <input type="number" id="m-height" min="0" step="0.5">
+                        </div>
+                        <div class="field" id="m-spread-row">
+                            <label>Průměr koruny (m)</label>
+                            <input type="number" id="m-spread" min="0" step="0.5">
+                        </div>
+                        <div class="field" id="m-quarters-row" style="display:none;">
+                            <label>Počet čtvrtin koruny</label>
+                            <input type="number" id="m-quarters" min="1" max="4" value="1">
+                        </div>
+                        <div class="field">
+                            <label>Počet</label>
+                            <input type="number" id="m-count" min="1" value="1">
+                        </div>
+                    </div>
+                    <p class="buttons">
+                        <button type="button" id="btn-confirm-measure" class="primary">Přidat</button>
+                        <button type="button" id="btn-cancel-measure">Zrušit</button>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="error" style="display:none;">
+            <h2>Chyba</h2>
+            <p id="error-message"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            Implementace dle <a href="https://www.nature.cz" target="_blank">Metodiky AOPK ČR</a> (Kolařík et al. 2022).
+            Hodnoty v cenové úrovni 2020 přepočtené inflačním koeficientem ČSÚ.
+            Tento výpočet má informativní charakter.
+        </p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

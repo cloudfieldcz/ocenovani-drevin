@@ -1,0 +1,43 @@
+[project]
+name = "ocenovani-drevin"
+version = "0.1.0"
+description = "Kalkulátor oceňování dřevin dle metodiky AOPK ČR (2021/2022)"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "valda" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+# uv-native dev group (automaticky synchronizováno přes `uv sync` a `uv run`)
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+[project.scripts]
+ocenovani-drevin = "main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["data"]
+include = ["main.py", "calculator.py", "compensation.py", "static"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

@@ -1,0 +1,330 @@
+/* Jednoduchý čistý styl pro kalkulačku oceňování dřevin */
+
+:root {
+    --primary: #2d6a3e;
+    --primary-light: #4a8b5a;
+    --bg: #fafafa;
+    --surface: #fff;
+    --border: #d0d0d0;
+    --text: #222;
+    --muted: #666;
+    --danger: #c0392b;
+    --success: #1e7e34;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.5;
+}
+
+header {
+    background: var(--primary);
+    color: white;
+    padding: 1.5em 2em;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.6em;
+    font-weight: 600;
+}
+
+header .subtitle {
+    font-size: 0.65em;
+    font-weight: 400;
+    opacity: 0.85;
+    margin-left: 0.5em;
+}
+
+main {
+    max-width: 900px;
+    margin: 2em auto;
+    padding: 0 1em;
+}
+
+.info-bar {
+    background: #e8f0ea;
+    padding: 0.75em 1em;
+    border-radius: 4px;
+    margin-bottom: 1.5em;
+    font-size: 0.9em;
+    color: var(--muted);
+}
+
+h2 {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 0.3em;
+    margin-top: 2em;
+}
+
+h3 {
+    color: var(--primary);
+    margin-top: 1.5em;
+    font-size: 1.1em;
+}
+
+form {
+    background: var(--surface);
+    padding: 1.5em;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.field {
+    margin-bottom: 1em;
+    flex: 1;
+}
+
+.field-row {
+    display: flex;
+    gap: 1em;
+    margin-bottom: 1em;
+}
+
+.field-row .field {
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.3em;
+    font-size: 0.95em;
+}
+
+label.checkbox {
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    cursor: pointer;
+}
+
+label.checkbox input { margin: 0; }
+
+.required {
+    color: var(--danger);
+}
+
+input[type="text"], input[type="number"], select {
+    width: 100%;
+    padding: 0.5em 0.6em;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-family: inherit;
+    background: white;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(45, 106, 62, 0.15);
+}
+
+.hint {
+    font-size: 0.85em;
+    color: var(--muted);
+    margin-top: 0.3em;
+}
+
+.link-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    margin-top: 0.5em;
+    font: inherit;
+}
+
+#diameters .diameter {
+    width: auto;
+    display: inline-block;
+    margin-right: 0.5em;
+    margin-bottom: 0.3em;
+}
+
+fieldset {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1em;
+    margin: 1.5em 0;
+}
+
+legend {
+    font-weight: 600;
+    padding: 0 0.5em;
+    color: var(--primary);
+}
+
+.micro-habitats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.5em;
+    margin-top: 0.5em;
+}
+
+.micro-habitats label {
+    font-weight: normal;
+    margin: 0;
+}
+
+.micro-habitats .valuable {
+    margin-left: 1.7em;
+    color: var(--muted);
+    font-size: 0.85em;
+}
+
+.buttons {
+    display: flex;
+    gap: 0.75em;
+    margin-top: 1.5em;
+}
+
+button {
+    padding: 0.65em 1.3em;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 4px;
+    font: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+button:hover {
+    background: #f0f0f0;
+}
+
+button.primary {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: 600;
+}
+
+button.primary:hover {
+    background: var(--primary-light);
+}
+
+.compensation-buttons {
+    margin-top: 1em;
+    display: flex;
+    gap: 0.5em;
+}
+
+/* Výsledky */
+#result-section, #compensation-block {
+    background: var(--surface);
+    padding: 1.5em;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-top: 2em;
+}
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+
+.result-table td, .result-table th {
+    padding: 0.5em 0.75em;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.result-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+
+.result-table .right {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.result-table .step-name {
+    color: var(--muted);
+    width: 60%;
+}
+
+.result-table .step-value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+}
+
+.result-table tr.final {
+    font-weight: 600;
+    background: #f8faf8;
+}
+
+.result-table tr.final td {
+    border-top: 2px solid var(--primary);
+}
+
+.result-summary {
+    font-size: 1.3em;
+    color: var(--primary);
+    margin: 1em 0;
+    padding: 1em;
+    background: #f0f6f2;
+    border-left: 4px solid var(--primary);
+    border-radius: 4px;
+}
+
+.result-summary strong {
+    font-size: 1.4em;
+}
+
+.inline-form {
+    background: #f9f9f9;
+    padding: 1em;
+    border-radius: 4px;
+    margin-top: 1em;
+}
+
+#damage-info {
+    background: #fff3cd;
+    border-left: 4px solid #d39e00;
+    padding: 1em;
+    margin: 1em 0;
+    border-radius: 4px;
+}
+
+#error {
+    background: #fde2e2;
+    border: 1px solid #c0392b;
+    padding: 1em;
+    margin-top: 2em;
+    border-radius: 6px;
+}
+
+#compensation-frame-info {
+    background: #e8f0ea;
+    padding: 0.75em 1em;
+    border-radius: 4px;
+    margin-bottom: 1em;
+    font-size: 0.9em;
+}
+
+footer {
+    margin-top: 4em;
+    padding: 1.5em 2em;
+    background: #2a2a2a;
+    color: #aaa;
+    font-size: 0.85em;
+    text-align: center;
+}
+
+footer a {
+    color: #b5d6bc;
+}
