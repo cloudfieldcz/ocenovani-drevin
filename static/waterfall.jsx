@@ -10,7 +10,7 @@ const Waterfall = (function () {
     // Steps in order, each: {label, value, delta_from_prev}
     const steps = [];
     steps.push({ key: 'zbh', label: 'ZBH', sub: 'základ', value: r.step_1_zbh, prev: 0 });
-    steps.push({ key: 'crown', label: 'Objem koruny', sub: r.crown_ratio != null ? `× ${(r.crown_ratio).toFixed(2).replace('.', ',')}` : 'nepřepočítáno', value: r.step_2_after_crown, prev: r.step_1_zbh });
+    steps.push({ key: 'crown', label: 'Objem koruny', sub: r.crown_ratio != null ? `× ${(r.crown_ratio).toFixed(2).replace('.', ',')}` : 'tvar neurčen', value: r.step_2_after_crown, prev: r.step_1_zbh });
     steps.push({ key: 'health', label: 'Zdraví × vitalita', sub: `× ${window.fmtCoef(r.health_coefficient)}`, value: r.step_3_after_health, prev: r.step_2_after_crown });
     if (r.cut_coefficient != null) {
       steps.push({ key: 'cut', label: 'Nevhodný řez', sub: `× ${window.fmtCoef(r.cut_coefficient)}`, value: r.step_4_after_cut, prev: r.step_3_after_health });

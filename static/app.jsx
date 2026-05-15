@@ -336,6 +336,8 @@ function App() {
     treeHeight: 18,
     stemHeight: 5,
     crownSpread: 12,
+    crownShape: null,        // null = auto-default z taxonu (viz useEffect níže)
+    crownShapeOverride: false, // true = uživatel ručně přepsal, neoverwrituj při změně taxonu
     vitality: 1,
     health: 1,
     cutPct: 0,
@@ -353,6 +355,16 @@ function App() {
     window.loadYearInfo().then(setYearInfo).catch(console.warn);
   }, []);
 
+  // Při změně taxonu auto-vyplň tvar koruny z dat taxonu, nebo 'zaoblena' jako default pro listnáče.
+  // Uživatel může v sekci 02 ručně přepsat.
+  useEffect(() => {
+    if (!taxons || taxons.length === 0) return;
+    const t = taxons.find((x) => x.la === state.taxonLa);
+    if (!t) return;
+    const fromTaxon = t.shape && t.shape !== 'jiny' ? t.shape : 'zaoblena';
+    setState((s) => ({ ...s, crownShape: fromTaxon }));
+  }, [state.taxonLa, taxons]);
+
   // Debounced výpočet při změně formuláře
   const debounceRef = useRef(null);
   useEffect(() => {
@@ -369,6 +381,7 @@ function App() {
           tree_height_m: state.treeHeight || null,
           stem_height_m: state.stemHeight || null,
           crown_spread_m: state.crownSpread || null,
+          crown_shape: state.crownShape || null,
           vitality: state.vitality,
           health: state.health,
           removed_crown_volume_pct: state.cutPct || null,
@@ -442,7 +455,7 @@ function App() {
       <div className="in-body">
         <div className="in-form">
           <TaxonSection state={state} set={set} taxons={taxons} taxon={taxon} />
-          <DimSection state={state} set={set} />
+          <DimSection state={state} set={set} taxon={taxon} />
           <HealthSection state={state} set={set} />
           <LocSection state={state} set={set} />
           <HabitatsSection state={state} set={set} />
@@ -565,7 +578,14 @@ function TaxonSection({ state, set, taxons, taxon }) {
   );
 }
 
-function DimSection({ state, set }) {
+function DimSection({ state, set, taxon }) {
+  const SHAPE_CHOICES = [
+    { value: 'kuzelovita', label: 'kuželovitá' },
+    { value: 'sloupovita', label: 'sloupovitá' },
+    { value: 'zaoblena',   label: 'zaoblená' },
+    { value: 'kulovita',   label: 'kulovitá' },
+  ];
+  const fromTaxon = taxon?.shape && taxon.shape !== 'jiny' ? taxon.shape : null;
   const updateD = (i, v) => { const arr = [...state.diameters]; arr[i] = parseFloat(v) || 0; set({ diameters: arr }); };
   const addD = () => set({ diameters: [...state.diameters, 30] });
   const removeD = (i) => set({ diameters: state.diameters.filter((_, idx) => idx !== i) });
@@ -614,6 +634,25 @@ function DimSection({ state, set }) {
           </div>
         </div>
         <div className="help">Všechny tři aktivují přepočet objemu koruny (krok 2).</div>
+
+        <label>Tvar koruny</label>
+        <div>
+          <div className="in-pills">
+            {SHAPE_CHOICES.map((o) => (
+              <button
+                key={o.value}
+                className="in-pill"
+                aria-pressed={state.crownShape === o.value}
+                onClick={() => set({ crownShape: o.value })}
+              >{o.label}</button>
+            ))}
+          </div>
+          <div className="help">
+            {fromTaxon
+              ? <>Z dat taxonu: <b>{SHAPE_CHOICES.find(c => c.value === fromTaxon)?.label || fromTaxon}</b>. Můžeš přepsat.</>
+              : <>Pro tento taxon není tvar v datech — výchozí <b>zaoblená</b>. Vyber přesněji, pokud víš.</>}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -955,7 +994,7 @@ function CompensationSection({ result, treeState }) {
 function DetailTable({ result: r }) {
   const rows = [
     { tag: '01', label: 'ZBH', detail: 'Základní bodová hodnota', value: `${fmtNum(r.step_1_zbh)}`, unit: 'b.' },
-    { tag: '02', label: 'Koruna', detail: r.crown_ratio != null ? `Objem ${fmtNum(r.real_crown_volume_m3)}/${fmtNum(r.table_crown_volume_m3)} m³ · k=${Number(r.crown_ratio).toFixed(2)}` : 'Nepřepočítáno', value: `${fmtNum(r.step_2_after_crown)}`, unit: 'b.' },
+    { tag: '02', label: 'Koruna', detail: r.crown_ratio != null ? `Objem ${fmtNum(r.real_crown_volume_m3)}/${fmtNum(r.table_crown_volume_m3)} m³ · k=${Number(r.crown_ratio).toFixed(2)}` : 'Tvar koruny neurčen — krok přeskočen', value: `${fmtNum(r.step_2_after_crown)}`, unit: 'b.' },
     { tag: '03', label: 'Zdraví', detail: `Zdraví × vitalita · k=${fmtCoef(r.health_coefficient)}`, value: `${fmtNum(r.step_3_after_health)}`, unit: 'b.' },
     { tag: '04', label: 'Řez', detail: r.cut_coefficient != null ? `Nevhodný řez · k=${fmtCoef(r.cut_coefficient)}` : 'Neaplikováno', value: `${fmtNum(r.step_4_after_cut)}`, unit: 'b.' },
     { tag: '05', label: 'Poloha', detail: `Atrakt. × růst${r.location_coefficient > 1 ? ' × památný' : ''} · k=${fmtCoef(r.location_coefficient)}`, value: `${fmtNum(r.step_5_after_location)}`, unit: 'b.' },

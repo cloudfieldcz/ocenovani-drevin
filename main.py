@@ -66,6 +66,9 @@ class TreeCalculateRequest(BaseModel):
     tree_height_m: Optional[float] = Field(None, description='Výška stromu (m)')
     stem_height_m: Optional[float] = Field(None, description='Výška nasazení koruny (m)')
     crown_spread_m: Optional[float] = Field(None, description='Průměr koruny (m)')
+    crown_shape: Optional[Literal['kuzelovita', 'sloupovita', 'zaoblena', 'kulovita']] = Field(
+        None, description='Override tvaru koruny (default z taxonu)'
+    )
 
     vitality: int = Field(1, ge=1, le=5, description='Fyziologická vitalita 1-5')
     health: int = Field(1, ge=1, le=5, description='Zdravotní stav 1-5')
@@ -170,6 +173,7 @@ async def calculate(req: TreeCalculateRequest):
         tree_height_m=req.tree_height_m,
         stem_height_m=req.stem_height_m,
         crown_spread_m=req.crown_spread_m,
+        crown_shape=req.crown_shape,
         vitality=req.vitality,
         health=req.health,
         removed_crown_volume_pct=req.removed_crown_volume_pct,

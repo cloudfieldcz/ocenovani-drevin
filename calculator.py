@@ -31,6 +31,7 @@ class TreeInput:
     tree_height_m: Optional[float] = None       # výška stromu
     stem_height_m: Optional[float] = None       # výška nasazení koruny
     crown_spread_m: Optional[float] = None      # průměr koruny
+    crown_shape: Optional[str] = None           # override tvaru koruny (jinak z taxonu)
 
     # Zdravotní stav a vitalita (povinné)
     vitality: int = 1            # 1-5
@@ -194,7 +195,8 @@ def calculate_tree(inp: TreeInput) -> TreeResult:
         result.step_1_zbh = tables.get_zbh(int(round(diameter)), category)
 
     # ===== KROK 2: Zohlednění objemu koruny =====
-    crown_shape = taxon.get('shape')
+    # Tvar koruny: uživatelský override má přednost před tvarem z taxonu
+    crown_shape = inp.crown_shape if inp.crown_shape else taxon.get('shape')
     result.crown_shape = crown_shape
 
     has_all_crown_params = (
