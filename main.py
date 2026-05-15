@@ -2,7 +2,8 @@
 FastAPI server pro kalkulačku oceňování dřevin dle metodiky AOPK ČR.
 
 Endpointy:
-    GET  /              — statický HTML formulář
+    GET  /              — nové UI (React + Babel-in-browser, /static/index.html)
+    GET  /old-ui        — původní HTML formulář (zachováno pro referenci)
     GET  /api/taxons    — seznam taxonů
     POST /api/calculate — výpočet hodnoty stromu
     POST /api/group     — výpočet hodnoty porostu
@@ -279,8 +280,14 @@ if STATIC_DIR.exists():
 
 @app.get('/')
 async def index():
-    """Hlavní stránka - formulář pro výpočet."""
+    """Nové UI — React kalkulačka (kořen aplikace)."""
     return FileResponse(STATIC_DIR / 'index.html')
+
+
+@app.get('/old-ui')
+async def old_ui():
+    """Původní HTML formulář (před přechodem na nové UI)."""
+    return FileResponse(STATIC_DIR / 'old-ui' / 'index.html')
 
 
 def run():

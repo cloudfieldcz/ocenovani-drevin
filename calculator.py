@@ -80,6 +80,7 @@ class TreeResult:
     # Pomocné hodnoty
     real_crown_volume_m3: Optional[float] = None
     table_crown_volume_m3: Optional[float] = None
+    crown_ratio: Optional[float] = None
     health_coefficient: Optional[float] = None
     cut_coefficient: Optional[float] = None
     cut_reduction: int = 0                 # snížení hodnoty po nevhodném řezu
@@ -218,9 +219,11 @@ def calculate_tree(inp: TreeInput) -> TreeResult:
             result.table_crown_volume_m3 = table_volume
 
             if real_volume >= table_volume:
+                result.crown_ratio = 1.0
                 result.step_2_after_crown = result.step_1_zbh
             else:
                 ratio = real_volume / table_volume
+                result.crown_ratio = round(ratio, 4)
                 result.step_2_after_crown = round_to_whole(result.step_1_zbh * ratio)
 
     # ===== KROK 3: Zohlednění zdravotního stavu a vitality =====

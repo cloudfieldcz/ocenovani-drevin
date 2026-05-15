@@ -101,6 +101,7 @@ class CompensationResultItem:
     description: str
     points: int
     value_in_czk: int
+    kind: str = ''  # 'outplanting' | 'measure'
 
 
 @dataclass
@@ -203,14 +204,14 @@ def calculate_compensation(inp: CompensationInput) -> CompensationResult:
         pts = outplanting_value_points(op)
         czk = round_to_whole(pts * inflation)
         desc = _format_outplanting_desc(op)
-        result.items.append(CompensationResultItem(desc, pts, czk))
+        result.items.append(CompensationResultItem(desc, pts, czk, kind='outplanting'))
 
     # Pěstební opatření
     for m in inp.measures:
         pts = measure_value_points(m)
         czk = round_to_whole(pts * inflation)
         desc = _format_measure_desc(m)
-        result.items.append(CompensationResultItem(desc, pts, czk))
+        result.items.append(CompensationResultItem(desc, pts, czk, kind='measure'))
 
     result.total_points = sum(it.points for it in result.items)
     result.total_value_in_czk = sum(it.value_in_czk for it in result.items)

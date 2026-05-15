@@ -22,11 +22,11 @@ uv run uvicorn main:app --reload
 uv run python main.py
 ```
 
-Server běží na `http://127.0.0.1:8000`. Otevři tu URL v prohlížeči pro formulář, nebo zaměř na endpointy:
+Server běží na `http://127.0.0.1:8000`. Nové UI zatím není připravené (root `/` vrací 404); původní formulář je dostupný na `/old-ui`.
 
 | Endpoint | Popis |
 |---|---|
-| `GET /` | HTML formulář (frontend) |
+| `GET /old-ui` | Původní HTML formulář (frontend) |
 | `GET /api/taxons` | Seznam ~300 taxonů (Tab. 1 metodiky) |
 | `POST /api/calculate` | Výpočet hodnoty solitérního stromu (9 kroků) |
 | `POST /api/group` | Výpočet hodnoty porostu dřevin |
@@ -60,9 +60,10 @@ ocenovani-drevin/
 ├── tests/
 │   └── test_calculator.py     — 40 unit testů (pytest)
 └── static/
-    ├── index.html             — HTML formulář
-    ├── style.css              — styling
-    └── app.js                 — frontend logika
+    └── old-ui/                — původní UI, dostupné na /old-ui
+        ├── index.html         — HTML formulář
+        ├── style.css          — styling
+        └── app.js             — frontend logika
 ```
 
 ## Postup výpočtu (9 kroků metodiky)
