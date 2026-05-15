@@ -647,7 +647,7 @@ function DimSection({ state, set, taxon }) {
               >{o.label}</button>
             ))}
           </div>
-          <div className="help">
+          <div className="help" style={{ marginTop: 6 }}>
             {fromTaxon
               ? <>Z dat taxonu: <b>{SHAPE_CHOICES.find(c => c.value === fromTaxon)?.label || fromTaxon}</b>. Můžeš přepsat.</>
               : <>Pro tento taxon není tvar v datech — výchozí <b>zaoblená</b>. Vyber přesněji, pokud víš.</>}
